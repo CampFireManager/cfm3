@@ -1,3 +1,0 @@
-### Campfire Manager 3
-
-
