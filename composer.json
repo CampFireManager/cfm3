@@ -1,0 +1,16 @@
+{
+    "name": "CampFireManager/cfm3",
+    "description": "Campfire Manager version 3",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "framework",
+        "zf2"
+    ],
+    "homepage": "http://framework.zend.com/",
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "2.*",
+        "zf-commons/zfc-user": "dev-master",
+        "bjyoungblood/BjyProfiler": "dev-master"
+    }
+}
