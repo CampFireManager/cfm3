@@ -1,0 +1,5 @@
+mysql_user,cfm3
+mysql_pass,cfm3
+mysql_base,cfm3
+timezone,Europe/London
+ssl_file_base,apache

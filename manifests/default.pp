@@ -1,39 +1,55 @@
-node default {
-    Exec {
-        path => '/usr/local/bin:/bin:/usr/bin:/home/vagrant/bin:/usr/sbin:/sbin'
-    }
+$extlookup_datadir = "./extdata"
+$extlookup_precedence = ["%{fqdn}", "default"]
+
+class timezone {
+    $timezone_region = extlookup('timezone')
 
     file { "/etc/timezone":
-        content => "Europe/London\n",
+        content => "${timezone_region}\n",
     }
 
     exec { "timezonesetup":
         command => "dpkg-reconfigure -f noninteractive tzdata",
         require => File["/etc/timezone"]
     }
+}
 
-    Package { require => Exec["apt-get update"] }
-    File { require => Exec["apt-get update"] }
+class mysql {
+    $username = extlookup('mysql_user')
+    $password = extlookup('mysql_pass')
+    $database = extlookup('mysql_base')
 
-    package { "python-software-properties":
-        ensure => present,
+    package { "mysql-server": 
+        ensure => "installed" 
     }
 
-    exec { "php54 ppa":
-        command => "sudo add-apt-repository ppa:ondrej/php5 --yes",
-        require => Package["python-software-properties"]
+    service { "mysql":
+        enable => true,
+        ensure => running,
+        require => Package["mysql-server"],
     }
 
-    exec { "git ppa":
-        command => "sudo add-apt-repository ppa:git-core/ppa --yes",
-        require => Exec["php54 ppa"]
+    # This part is based on 
+    # http://bitfieldconsulting.com/puppet-and-mysql-create-databases-and-users
+
+    exec { "create db":
+        unless => "mysql -uroot ${database}",
+        command => "echo 'create database ${database}' | mysql -uroot",
+        require => Service["mysql"]
+    }    
+
+    exec { "grant rights":
+        unless => "/usr/bin/mysql -u${username} -p\"${password}\" ${database}",
+        command => "/usr/bin/mysql -uroot -e \"grant all on ${database}.* to ${username}@localhost identified by '${password}';\"",
+        require => [Service["mysql"], Exec["create db"]]
     }
 
+    # todo: If username is not as per default, touch config/autoload/local.php
+    # and set the db credentials in there!
+}
 
-    exec { "apt-get update":
-        command => "apt-get update",
-    }
-
+class apache {
+    $ssl_file_base = extlookup('ssl_file_base')
 
     $packages = [
         "curl",
@@ -47,11 +63,11 @@ node default {
         "php5-mcrypt",
         "php5-curl",
         "php-apc",
-        "mysql-server",
         "imagemagick",
         "php5-imagick",
         "git"
     ]
+
     package { $packages:
         ensure => "installed",
         require => Exec["git ppa"]
@@ -73,29 +89,18 @@ node default {
     }
 
     exec { "add ssl dir":
-        command => "mkdir /etc/apache2/ssl",
+        command => "mkdir -p /etc/apache2/ssl",
         require => Exec["add ssl port"]
     }
 
     file { "/etc/apache2/ssl/apache.key":
-        source => "/tmp/vagrant-puppet/manifests/resources/ssl/apache.key",
+        source => "/tmp/vagrant-puppet/manifests/resources/ssl/${ssl_file_base}.key",
         require => Exec["add ssl dir"]
     }
 
     file { "/etc/apache2/ssl/apache.pem":
-        source => "/tmp/vagrant-puppet/manifests/resources/ssl/apache.pem",
+        source => "/tmp/vagrant-puppet/manifests/resources/ssl/${ssl_file_base}.pem",
         require => Exec["add ssl dir"]
-    }
-
-    service { "mysql":
-        enable => true,
-        ensure => running,
-        require => Package["mysql-server"],
-    }
-
-    exec { "create db":
-        command => "echo 'create database cfm3' | mysql -uroot",
-        require => Service["mysql"]
     }
     
     file { "/etc/apache2/sites-available/default":
@@ -117,4 +122,36 @@ node default {
         command => "sudo service apache2 reload",
         require => Exec["enable site"]
     }
+}
+
+node default {
+    include timezone
+
+    Exec {
+        path => '/usr/local/bin:/bin:/usr/bin:/home/vagrant/bin:/usr/sbin:/sbin'
+    }
+
+    Package { require => Exec["apt-get update"] }
+    File { require => Exec["apt-get update"] }
+
+    package { "python-software-properties":
+        ensure => present,
+    }
+
+    exec { "php54 ppa":
+        command => "sudo add-apt-repository ppa:ondrej/php5 --yes",
+        require => Package["python-software-properties"]
+    }
+
+    exec { "git ppa":
+        command => "sudo add-apt-repository ppa:git-core/ppa --yes",
+        require => Exec["php54 ppa"]
+    }
+
+    exec { "apt-get update":
+        command => "apt-get update",
+    }
+
+    include mysql
+    include apache
 }
