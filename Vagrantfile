@@ -2,6 +2,9 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu"
   config.vm.box_url = "https://s3.amazonaws.com/gsc-vagrant-boxes/ubuntu-12.04.2-i386-chef-11-omnibus.box"
 
+  config.ssh.timeout = 300
+  config.ssh.max_tries = 300
+
   # This works around errors during `vagrant up` about missing host name
   config.vm.hostname = "cfm3.local"
 
