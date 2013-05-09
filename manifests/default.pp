@@ -88,19 +88,19 @@ class apache {
         require => Exec["enable ssl"]
     }
 
-    exec { "add ssl dir":
-        command => "mkdir -p /etc/apache2/ssl",
+    file { "/etc/apache2/ssl":
+        ensure => directory,
         require => Exec["add ssl port"]
     }
 
     file { "/etc/apache2/ssl/apache.key":
         source => "/tmp/vagrant-puppet/manifests/resources/ssl/${ssl_file_base}.key",
-        require => Exec["add ssl dir"]
+        require => File["/etc/apache2/ssl"]
     }
 
     file { "/etc/apache2/ssl/apache.pem":
         source => "/tmp/vagrant-puppet/manifests/resources/ssl/${ssl_file_base}.pem",
-        require => Exec["add ssl dir"]
+        require => File["/etc/apache2/ssl"]
     }
     
     file { "/etc/apache2/sites-available/default":
