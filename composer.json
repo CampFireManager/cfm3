@@ -6,10 +6,11 @@
         "framework",
         "zf2"
     ],
+    "minimum-stability": "dev",
     "homepage": "http://framework.zend.com/",
     "require": {
         "php": ">=5.3.3",
-        "zendframework/zendframework": "2.*",
+        "zendframework/zendframework": "dev-master",
         "zf-commons/zfc-user": "dev-master",
         "bjyoungblood/BjyProfiler": "dev-master"
     }
