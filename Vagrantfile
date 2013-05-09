@@ -34,7 +34,7 @@ Vagrant.configure("2") do |config|
     puppet.manifest_file = "default.pp"
     # This means we could set various actions on puppet based on the production 
     # status. Initially just "Development", "Production"
-    puppet.facter => { 
+    puppet.facter = { 
       "ProductionStatus" => "Development" 
     }
   end
