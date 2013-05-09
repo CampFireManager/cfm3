@@ -48,7 +48,7 @@ class mysql {
     # and set the db credentials in there!
 }
 
-class apache {
+class apache_and_php {
     $ssl_file_base = extlookup('ssl_file_base')
 
     $packages = [
@@ -124,11 +124,35 @@ class apache {
     }
 }
 
+class composer {
+    exec { "install composer executable":
+        command => "if [ ! -f /usr/local/bin/composer ]; then curl -sS https://getcomposer.org/installer | php && sudo mv composer.phar /usr/local/bin/composer; fi",
+        require => [Package["php5-cli"], Package["curl"]],
+        creates => "/usr/local/bin/composer"
+    }
+
+    exec { "upgrade composer":
+        onlyif => "[ -f /usr/local/bin/composer ]",
+        command => "composer self-update",
+        require => Package["php5-cli"]
+    }
+
+    exec { "install composer spec":
+        cwd => "/var/www",
+        command => "composer install",
+        require => [Exec["install composer executable"], Exec["upgrade composer"]]
+    }
+}
+
 node default {
     include timezone
 
     Exec {
         path => '/usr/local/bin:/bin:/usr/bin:/home/vagrant/bin:/usr/sbin:/sbin'
+    }
+
+    exec { "apt-get update":
+        command => "apt-get update",
     }
 
     Package { require => Exec["apt-get update"] }
@@ -148,10 +172,7 @@ node default {
         require => Exec["php54 ppa"]
     }
 
-    exec { "apt-get update":
-        command => "apt-get update",
-    }
-
     include mysql
-    include apache
+    include apache_and_php
+    include composer
 }
