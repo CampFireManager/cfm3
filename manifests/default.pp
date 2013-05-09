@@ -126,7 +126,8 @@ class apache_and_php {
 
 class composer {
     exec { "install composer executable":
-        command => "if [ ! -f /usr/local/bin/composer ]; then curl -sS https://getcomposer.org/installer | php && sudo mv composer.phar /usr/local/bin/composer; fi",
+        onlyif => "[ ! -f /usr/local/bin/composer ]",
+        command => "curl -sS https://getcomposer.org/installer | php && sudo mv composer.phar /usr/local/bin/composer",
         require => [Package["php5-cli"], Package["curl"]],
         creates => "/usr/local/bin/composer"
     }
@@ -139,6 +140,7 @@ class composer {
 
     exec { "install composer spec":
         cwd => "/var/www",
+        environment => "HOME=/home/${id}",
         command => "composer install",
         require => [Exec["install composer executable"], Exec["upgrade composer"]]
     }
