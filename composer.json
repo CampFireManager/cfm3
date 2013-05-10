@@ -13,5 +13,8 @@
         "zendframework/zendframework": "dev-master",
         "zf-commons/zfc-user": "dev-master",
         "bjyoungblood/BjyProfiler": "dev-master"
+    },
+    "config": {
+        "process-timeout": 6000
     }
 }
