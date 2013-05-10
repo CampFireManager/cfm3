@@ -16,4 +16,11 @@ This project is looking to use a combination of [Vagrant](http://www.vagrantup.c
 
 ## Getting involved
 
-Please feel free to fork this code on github and we would be very interested in pull requests. If you're not a coder, but you can submit bug reports, or can perform triage on issues, or want to help with documentation, or translations... please jump in. If you're looking for a way to get in touch with the team, please head over to our [Google Group](https://groups.google.com/group/campfiremanager "CampFireManager Google Group").
+Please feel free to fork this code on github and we would be very interested in pull requests. If 
+you're not a coder, but you can submit bug reports, or can perform triage on issues, or want to 
+help with documentation, or translations... please jump in and either submit tickets in our github 
+tracker, or post to the 
+[general mailing list](https://groups.google.com/group/campfiremanager "CampFireManager Google Group"). 
+
+If you want to keep on top of when changes are committed to the repository, join the 
+[internals mailing list](https://groups.google.com/group/campfiremanager-internals "CampFireManager Interals Mailing List").
