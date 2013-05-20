@@ -108,6 +108,10 @@ class apache_and_php {
         require => Package["apache2"]
     }
 
+    file { "/var/www/index.html":
+	ensure => absent
+    }
+
     exec { "enable rewrite":
         command => "sudo a2enmod rewrite",
         require => Package["apache2"]
