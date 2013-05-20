@@ -129,20 +129,23 @@ class composer {
         onlyif => "[ ! -f /usr/local/bin/composer ]",
         command => "curl -sS https://getcomposer.org/installer | php && sudo mv composer.phar /usr/local/bin/composer",
         require => [Package["php5-cli"], Package["curl"]],
-        creates => "/usr/local/bin/composer"
+        creates => "/usr/local/bin/composer",
+	timeout => 0
     }
 
     exec { "upgrade composer":
         onlyif => "[ -f /usr/local/bin/composer ]",
         command => "composer self-update",
-        require => Package["php5-cli"]
+        require => Package["php5-cli"],
+	timeout => 0
     }
 
     exec { "install composer spec":
         cwd => "/var/www",
         environment => "HOME=/home/${id}",
         command => "composer install",
-        require => [Exec["install composer executable"], Exec["upgrade composer"]]
+        require => [Exec["install composer executable"], Exec["upgrade composer"]],
+	timeout => 0
     }
 }
 
