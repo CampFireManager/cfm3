@@ -3,17 +3,30 @@
 return array(
     'router' => array(
         'routes' => array(
-            'api' => array(
+            'home' => array(
                 'type' => 'literal',
                 'options' => array(
-                    'route' => '/api',
+                    'route' => '/',
                     'defaults' => array(
-                        'controller' => 'Api\Controller\IndexController',
+                        'controller' => 'Api\Controller\Index',
                         'action' => 'index'
                     ),
                 ),
                 'may_terminate' => true,
-                'child_routes' => array()
+                'child_routes' => array(
+                    'api' => array(
+                        'type' => 'literal',
+                        'options' => array(
+                            'route' => 'api',
+                            'defaults' => array(
+                                'controller' => 'Api\Controller\Index',
+                                'action' => 'index'
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array()
+                    )
+                )
             )
         )
     )

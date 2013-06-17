@@ -5,11 +5,13 @@ use Zend\ModuleManager\ModuleManager;
 
 class Module {
     function getConfig() {
-        return ModuleUtil::getMergedConfigFromDir(__DIR__ . "/config/");
+        $config = ModuleUtil::getMergedConfigFromDir(__DIR__ . "/config/");
+        \Zend\Debug\Debug::dump($config);
+        return $config;
     }
     
     function init(ModuleManager $moduleManager) {
-        $moduleManager->loadModule('Talk');
+        // $moduleManager->loadModule('Talk');
     }
     
     function getAutoloaderConfig() {
@@ -21,4 +23,5 @@ class Module {
             ),
         );
     }
+    
 }
