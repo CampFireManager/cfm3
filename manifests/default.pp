@@ -104,10 +104,10 @@ class apache_and_php {
         require => File["/etc/apache2/ssl"]
     }
     
-    file { "/etc/apache2/sites-available/default":
-        source => "/tmp/vagrant-puppet/manifests/resources/cfm3.conf",
-        require => Package["apache2"]
-    }
+#    file { "/etc/apache2/sites-available/default":
+#        source => "/tmp/vagrant-puppet/manifests/resources/cfm3.conf",
+#        require => Package["apache2"]
+#    }
 
     file { "/var/www/index.html":
 	ensure => absent
@@ -120,7 +120,7 @@ class apache_and_php {
 
     exec { "enable site":
         command => "sudo a2ensite default",
-        require => File["/etc/apache2/sites-available/default"]
+#        require => File["/etc/apache2/sites-available/default"]
     }
 
     exec { "restart apache":
