@@ -57,6 +57,7 @@ class apache_and_php {
         "php5", 
         "php5-dev",
         "php5-cli",
+	"php5-intl",
         "php5-mysql",
         "libapache2-mod-php5",
         "php-pear",
