@@ -3,10 +3,9 @@ return array(
     // This should be an array of module namespaces used in the application.
     'modules' => array(
         'ZfcBase',
-        'ZfcUser',
-        'Cfm3User',
-        'Admin',
-        'Cfm3Frontend',
+        'BKUtil',
+        'Api',
+        
     ),
 
     // These are various options for the listeners attached to the ModuleManager
